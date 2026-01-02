@@ -120,6 +120,9 @@ project "assimp"
       "ASSIMP_BUILD_NO_GLOBALSCALE_PROCESS",
   }
 
+-- When we reach the point of supporting more file formats remember that you'll need to add the source files as we are doing
+-- this weird thing here where we set the NO_IMPORTER define and remove the source files whereas really we only need the NO_IMPORTER define
+
   files {
       "include/**",
       "code/Common/Assimp.cpp",
@@ -142,7 +145,6 @@ project "assimp"
       "code/Common/PostStepRegistry.cpp",
       "code/PostProcessing/ProcessHelper.cpp",
       "code/Common/scene.cpp",
-      --"code/CommonScenePreprocessor.cpp",
       "code/PostProcessing/ScaleProcess.cpp",
       "code/Common/SGSpatialSort.cpp",
       "code/Common/SkeletonMeshBuilder.cpp",
