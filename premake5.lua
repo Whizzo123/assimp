@@ -7,6 +7,34 @@ project "assimp"
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
   objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+  local python = os.host() == "windows" and "python" or "python3"
+
+  prebuildmessage "Generating assimp config.h"
+    prebuildcommands {
+        string.format('%s "%s" "%i" "%i" "%i" "%i" "%s" "%s"',
+            python,
+            path.translate("../../scripts/assimp/gen_config.py"),
+            6,
+            0,
+            2,
+            6,
+            "ASSIMP_DOUBLE_PRECISION",
+            "ASSIMP_BUILD_OBJ_IMPORTER"
+        ),
+        string.format('%s "%s" "%i" "%i" "%i" "%i"',
+            python,
+            path.translate("../../scripts/assimp/gen_revision.py"),
+            6,
+            0,
+            2,
+            6
+        ),
+        string.format('%s "%s"',
+            python,
+            path.translate("../../scripts/assimp/gen_zconf.py")
+        )
+    }
+
   defines {
       -- "SWIG",
       "ASSIMP_BUILD_NO_OWN_ZLIB",
@@ -52,7 +80,7 @@ project "assimp"
       "ASSIMP_BUILD_NO_XGL_IMPORTER",
       "ASSIMP_BUILD_NO_FBX_IMPORTER",
       "ASSIMP_BUILD_NO_ASSBIN_IMPORTER",
-      -- "ASSIMP_BUILD_NO_GLTF_IMPORTER",
+      "ASSIMP_BUILD_NO_GLTF_IMPORTER",
       "ASSIMP_BUILD_NO_C4D_IMPORTER",
       "ASSIMP_BUILD_NO_3MF_IMPORTER",
       "ASSIMP_BUILD_NO_X3D_IMPORTER",
@@ -60,6 +88,7 @@ project "assimp"
       
       "ASSIMP_BUILD_NO_STEP_EXPORTER",
       "ASSIMP_BUILD_NO_SIB_IMPORTER",
+      "ASSIMP_BUILD_NO_USD_IMPORTER",
 
       -- "ASSIMP_BUILD_NO_MAKELEFTHANDED_PROCESS",
       -- "ASSIMP_BUILD_NO_FLIPUVS_PROCESS",
@@ -93,52 +122,57 @@ project "assimp"
 
   files {
       "include/**",
-      "code/Assimp.cpp",
-      "code/BaseImporter.cpp",
-      "code/ColladaLoader.cpp",
-      "code/ColladaParser.cpp",
-      "code/CreateAnimMesh.cpp",
-      "code/PlyParser.cpp",
-      "code/PlyLoader.cpp",
-      "code/BaseProcess.cpp",
-      "code/EmbedTexturesProcess.cpp",
-      "code/ConvertToLHProcess.cpp",
-      "code/DefaultIOStream.cpp",
-      "code/DefaultIOSystem.cpp",
-      "code/DefaultLogger.cpp",
-      "code/GenVertexNormalsProcess.cpp",
-      "code/Importer.cpp",
-      "code/ImporterRegistry.cpp",
-      "code/MaterialSystem.cpp",
-      "code/PostStepRegistry.cpp",
-      "code/ProcessHelper.cpp",
-      "code/scene.cpp",
-      "code/ScenePreprocessor.cpp",
-      "code/ScaleProcess.cpp",
-      "code/SGSpatialSort.cpp",
-      "code/SkeletonMeshBuilder.cpp",
-      "code/SpatialSort.cpp",
-      "code/TriangulateProcess.cpp",
-      "code/ValidateDataStructure.cpp",
-      "code/Version.cpp",
-      "code/VertexTriangleAdjacency.cpp",
-      "code/ObjFileImporter.cpp",
-      "code/ObjFileMtlImporter.cpp",
-      "code/ObjFileParser.cpp",
-      "code/glTFImporter.cpp",
-      "code/glTF2Importer.cpp",
-      "code/MakeVerboseFormat.cpp",
-      "code/CalcTangentsProcess.cpp",
-      "code/ScaleProcess.cpp",
-      "code/EmbedTexturesProcess.cpp",
-      "contrib/irrXML/*",
+      "code/Common/Assimp.cpp",
+      "code/Common/BaseImporter.cpp",
+      "code/AssetLib/Collada/ColladaLoader.cpp",
+      "code/AssetLib/Collada/ColladaParser.cpp",
+      "code/Common/CreateAnimMesh.cpp",
+      "code/AssetLib/Ply/PlyParser.cpp",
+      "code/AssetLib/Ply/PlyLoader.cpp",
+      "code/Common/BaseProcess.cpp",
+      "code/PostProcessing/EmbedTexturesProcess.cpp",
+      "code/PostProcessing/ConvertToLHProcess.cpp",
+      "code/Common/DefaultIOStream.cpp",
+      "code/Common/DefaultIOSystem.cpp",
+      "code/Common/DefaultLogger.cpp",
+      "code/PostProcessing/GenVertexNormalsProcess.cpp",
+      "code/Common/Importer.cpp",
+      "code/Common/ImporterRegistry.cpp",
+      "code/Material/MaterialSystem.cpp",
+      "code/Common/PostStepRegistry.cpp",
+      "code/PostProcessing/ProcessHelper.cpp",
+      "code/Common/scene.cpp",
+      --"code/CommonScenePreprocessor.cpp",
+      "code/PostProcessing/ScaleProcess.cpp",
+      "code/Common/SGSpatialSort.cpp",
+      "code/Common/SkeletonMeshBuilder.cpp",
+      "code/Common/SpatialSort.cpp",
+      "code/PostProcessing/TriangulateProcess.cpp",
+      "code/PostProcessing/ValidateDataStructure.cpp",
+      "code/Common/Version.cpp",
+      "code/Common/VertexTriangleAdjacency.cpp",
+      "code/AssetLib/Obj/ObjFileImporter.cpp",
+      "code/AssetLib/Obj/ObjFileMtlImporter.cpp",
+      "code/AssetLib/Obj/ObjFileParser.cpp",
+      "code/AssetLib/glTF/glTFImporter.cpp",
+      "code/AssetLib/glTF2/glTF2Importer.cpp",
+      "code/PostProcessing/MakeVerboseFormat.cpp",
+      "code/PostProcessing/CalcTangentsProcess.cpp",
+      "code/PostProcessing/ScaleProcess.cpp",
+      "code/PostProcessing/EmbedTexturesProcess.cpp",
+      "contrib/irrXML/*"
   }
 
   includedirs {
+      ".",
       "include",
       "contrib/irrXML",
       "contrib/zlib",
       "contrib/rapidjson/include",
+      "contrib/utf8cpp/source",
+      "contrib/pugixml/src",
+      "code",
+      "../stb_image"
   }
 
 
